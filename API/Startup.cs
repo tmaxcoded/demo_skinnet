@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Core.Interfaces;
+using Infrastructure.Data;
 
 namespace API
 {
@@ -35,6 +37,7 @@ namespace API
             {
                 options.UseSqlite(_configuration.GetConnectionString("store"));
             });
+            services.AddScoped<IProductRepository,ProductRespository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
