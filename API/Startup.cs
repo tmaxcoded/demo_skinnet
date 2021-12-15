@@ -37,6 +37,7 @@ namespace API
             {
                 options.UseSqlite(_configuration.GetConnectionString("store"));
             });
+            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.AddScoped<IProductRepository,ProductRespository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
