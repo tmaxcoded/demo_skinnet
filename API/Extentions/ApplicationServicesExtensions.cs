@@ -13,6 +13,7 @@ namespace API.Extentions
         {
              services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.AddScoped<IProductRepository,ProductRespository>();
+            services.AddScoped<IBasketRepository,BasketRepository>();
             // validation error configuration
             services.Configure<ApiBehaviorOptions>(options => {
                 options.InvalidModelStateResponseFactory = actionContext =>{

@@ -9,6 +9,8 @@ using API.Helpers;
 using AutoMapper;
 using API.Middleware;
 using API.Extentions;
+using StackExchange.Redis;
+using Core.Interfaces;
 
 namespace API
 {
@@ -31,9 +33,18 @@ namespace API
             {
                 options.UseSqlite(_configuration.GetConnectionString("store"));
             });
-           
+
+            services.AddScoped<IProductRepository,ProductRespository>();
+
+            // Redis configuration
+            services.AddSingleton<IConnectionMultiplexer>(c => {
+                var configuration = ConfigurationOptions.Parse(_configuration.GetConnectionString("Redis"),true);
+
+                return  ConnectionMultiplexer.Connect(configuration);
+            });
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
+            
             services.AddApplicationServices();
             services.AddswaggerDocumentation();
             services.AddCors(option => {
