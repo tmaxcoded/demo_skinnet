@@ -11,6 +11,8 @@ using API.Middleware;
 using API.Extentions;
 using StackExchange.Redis;
 using Core.Interfaces;
+using Infrastructure.Identity;
+using API.Extensions;
 
 namespace API
 {
@@ -33,7 +35,9 @@ namespace API
             {
                 options.UseSqlite(_configuration.GetConnectionString("store"));
             });
-
+            services.AddDbContext<AppIdentityDbContext>(x => {
+                x.UseSqlite(_configuration.GetConnectionString("IdentityConnection"));
+            });
             services.AddScoped<IProductRepository,ProductRespository>();
 
             // Redis configuration
@@ -45,6 +49,7 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             
+            services.AddIdentityServices(_configuration);
             services.AddApplicationServices();
             services.AddswaggerDocumentation();
             services.AddCors(option => {
@@ -70,13 +75,14 @@ namespace API
             }
             
 
-           // app.UseStatusCodePagesWithReExecute("/errors/{0}");
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseStaticFiles();
             app.UseCors("CorsPolicy");
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
